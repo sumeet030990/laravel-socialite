@@ -1,0 +1,29 @@
+Socialite
+Details fetched from using Laravel Socialite are
+    // All Providers
+    $user->getId();
+    $user->getNickname();
+    $user->getName();
+    $user->getEmail();
+    $user->getAvatar();
+We can fetch more details as per the services
+Facebook:
+    Can fetch more details regarding the users by extending the scope in LoginController@redirectToProvider
+        User Data
+            email
+            groups_access_member_info
+            publish_to_groups
+            user_age_range
+            user_birthday
+            user_events
+            user_friends
+            user_gender
+            user_hometown
+            user_likes
+            user_link
+            user_location
+            user_photos
+            user_posts
+            user_tagged_places
+            user_videos
+        More details : https://developers.facebook.com/docs/facebook-login/permissions/#reference-email
