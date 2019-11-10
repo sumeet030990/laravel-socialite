@@ -41,7 +41,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/welcome';
 
     /**
      * Create a new controller instance.
@@ -67,11 +67,11 @@ class LoginController extends Controller
      */
     public function redirectToProvider(String $service)
     {
-        if(!$this->loginTypeService->checkLoginTypeExist($service)) {
+        if (!$this->loginTypeService->checkLoginTypeExist($service)) {
             return back();
         }
-
-        return $this->socialiteService->redirectToProviderService($service);
+        
+        return $this->socialiteService->redirectToProviderService($this->loginTypeService->getLoginTypeByName($service));
     }
 
     /**
@@ -84,19 +84,19 @@ class LoginController extends Controller
     {
         $eloquentUser = null;
         $socialiteUser = $this->socialiteService->getUserDetail($service);
-        $serviceId = $this->loginTypeService->getLoginTypeByName($service)->id;
+        $serviceModel = $this->loginTypeService->getLoginTypeByName($service);
         $eloquentUser = $this->userService->fetchUserIfEmailExist($socialiteUser->email);
-        
         if ($eloquentUser instanceof User) { //if email id exists in db
             if (!$this->userService->checkUserLoginType($eloquentUser, $service)) { // check login service type exist in db
-                $this->userService->storeUserLoginType($eloquentUser, $serviceId); //store only login type for the user
+                $this->userService->storeUserLoginType($eloquentUser, $serviceModel->id, $socialiteUser); //store only login type for the user
             }
         } else {
-            $eloquentUser = $this->storeUser($socialiteUser, $serviceId); //store entry in db
-        } 
+            $eloquentUser = $this->storeUser($socialiteUser, $serviceModel->id); //store entry in db
+        }
 
         $eloquentUser->user_login_type = $service; // set the login type of user
         Auth::login($eloquentUser);
+        session(['user_login_type'=>$serviceModel]);
 
         return redirect('home');
     }
@@ -110,6 +110,8 @@ class LoginController extends Controller
      */
     private function storeUser(SocialiteUser $socialiteUser, int $serviceId): User
     {
-        return $this->userService->storeUser($socialiteUser, $serviceId);
+        if($serviceId == 2) {
+            return $this->userService->storeFaceBookUser($socialiteUser, $serviceId);
+        }
     }
 }

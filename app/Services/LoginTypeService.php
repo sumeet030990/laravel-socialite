@@ -1,9 +1,6 @@
 <?php
 
-
 namespace App\Services;
-
-
 
 use App\Model\LoginType;
 use App\Repository\LoginTypeRepository;

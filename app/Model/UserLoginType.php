@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserLoginType extends Model
 {
@@ -26,6 +27,11 @@ class UserLoginType extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'loginType_id',
+        'user_id', 'loginType_id', 'token', 'refreshToken', 'expires_in', 'service_id'
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

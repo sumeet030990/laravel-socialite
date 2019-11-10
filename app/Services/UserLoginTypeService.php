@@ -1,11 +1,11 @@
 <?php
 
-
 namespace App\Services;
 
 use App\Model\User;
 use App\Model\UserLoginType;
 use App\Repository\UserLoginTypeRepository;
+use Laravel\Socialite\Two\User as SocialiteUser;
 
 class UserLoginTypeService
 {
@@ -26,6 +26,13 @@ class UserLoginTypeService
         return $this->userLoginTypeRepository->store([
             'user_id' => $user->id,
             'loginType_id' => 3
+        ]);
+    }
+
+    public function getUserByServiceId(SocialiteUser $socialiteUser)
+    {
+        return $this->userLoginTypeRepository->findWhere([
+            'service_id' => $socialiteUser->id
         ]);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -11,9 +13,10 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserService $userService)
     {
         $this->middleware('auth');
+        $this->userService = $userService;
     }
 
     /**
@@ -23,6 +26,8 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // $scope = $this->userService->getUserScopeForService(Auth::user(), session('user_login_type'));
+        // dd($scope);
         return view('home');
     }
 }
