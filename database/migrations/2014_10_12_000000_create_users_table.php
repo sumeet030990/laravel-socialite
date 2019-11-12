@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('current_city')->nullable();
             $table->string('hometown')->nullable();
             $table->date('date_of_birth')->nullable();
+            $table->string('gender')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

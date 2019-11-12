@@ -7,11 +7,11 @@
             <div class="card">
                 <div class="card-header">Access required</div>
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+                @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                @endif
                 </div>
                 <form action="{{ route('serviceScopeUser.store') }}" method="POST">
                     @csrf

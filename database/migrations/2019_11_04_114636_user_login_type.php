@@ -16,10 +16,10 @@ class UserLoginType extends Migration
         Schema::create('user_loginType', function (Blueprint $table) {
             $table->bigInteger('user_id');
             $table->bigInteger('loginType_id');
-            $table->string('token');
+            $table->string('token')->nullable();
             $table->string('refreshToken')->nullable();
-            $table->string('service_id');
-            $table->bigInteger('expires_in');
+            $table->string('service_id')->nullable();
+            $table->bigInteger('expires_in')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('loginType_id')->references('id')->on('login_types');

@@ -41,7 +41,10 @@ class ServiceScopeUserController extends Controller
         $this->serviceScopeUserService->updatePermission(Auth::user(), $request->all());
         $scope = $this->userService->getUserScopeForService(Auth::user(), session('user_login_type'));
 
-        return Socialite::driver(session('user_login_type')->name)->scopes($scope)->redirect();
+        return Socialite::driver(session('user_login_type')->name)
+        ->with(['auth_type' => 'rerequest'])
+        ->scopes($scope)
+        ->redirect();
     }
 
     /**

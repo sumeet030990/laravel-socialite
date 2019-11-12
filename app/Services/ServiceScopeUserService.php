@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Model\LoginServiceScope;
 use App\Model\User;
 use App\Repository\ServiceScopeUserRepository;
 
@@ -28,5 +29,10 @@ class ServiceScopeUserService
     {
         unset($data['_token']);
         return $this->serviceScopeUserRepository->updatePermission($user, $data);
+    }
+
+    public function updateUserDeclinedServiceScope(User $user, LoginServiceScope $loginServiceScope)
+    {
+        return $this->serviceScopeUserRepository->updateUserDeclinedServiceScopeate($user, $loginServiceScope);
     }
 }

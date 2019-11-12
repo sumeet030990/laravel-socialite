@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Model\User;
 use App\Model\ServiceScopeUser;
+use App\Model\LoginServiceScope;
 use Illuminate\Database\Eloquent\Collection;
 
 class ServiceScopeUserRepository extends Repository
@@ -24,9 +25,9 @@ class ServiceScopeUserRepository extends Repository
      * Undocumented function
      *
      * @param Array $data
-     * @return Collection
+     * @return bool
      */
-    public function insertAllScope(Array $data): Collection
+    public function insertAllScope(Array $data): bool
     {
         return $this->model->insert($data);
     }
@@ -47,5 +48,15 @@ class ServiceScopeUserRepository extends Repository
                 'permission' => $value
             ]);
         }
+    }
+    
+    public function updateUserDeclinedServiceScopeate(User $user, LoginServiceScope $loginServiceScope)
+    {
+        $this->model->where('user_id', $user->id)
+        ->where('scope_id', $loginServiceScope->id)
+        ->where('permission', true)
+        ->update([
+            'permission' => false
+        ]);
     }
 }

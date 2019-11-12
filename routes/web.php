@@ -18,8 +18,8 @@ Route::get('/', function () {
     return view('welcome');
 })->middleware('guest');
 
-Route::get('login/{service}', 'Auth\LoginController@redirectToProvider');
-Route::get('login/{service}/callback', 'Auth\LoginController@handleProviderCallback');
+Route::get('login/{service}', 'SocialiteController@redirectToProvider');
+Route::get('login/{service}/callback', 'SocialiteController@handleProviderCallback');
 
 Auth::routes();
 
@@ -29,5 +29,6 @@ Route::post('/service-scope-user', 'ServiceScopeUserController@store')->name('se
 Route::get('/getServicesPendingPermissions', 'ServiceScopeUserController@getServicesPendingPermissions')->name('serviceScopeUser.getServicesPendingPermissions');
 
 Route::get('/test', function(){
-    dd(Auth::user()->permissionGivenScopes->where('loginType_id', 2)->load('scope'));
+    dd(Auth::user()->user_loginType);
+
 });

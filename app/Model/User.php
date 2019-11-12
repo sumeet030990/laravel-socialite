@@ -5,6 +5,7 @@ namespace App\Model;
 use App\Model\ServiceScopeUser;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -49,6 +50,16 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(LoginType::class, 'user_loginType',  'user_id', 'loginType_id');
     }
+   
+    /**
+     * User Relationship with user_loginType
+     *
+     * @return HasOne
+     */
+    public function user_loginType(): HasOne
+    {
+        return $this->hasOne(UserLoginType::class);
+    }
 
     /**
      * Relationship with scope function where permission are given
@@ -57,7 +68,7 @@ class User extends Authenticatable
      */
     public function permissionGivenScopes(): HasMany
     {
-        return $this->hasMany('App\Model\ServiceScopeUser')
+        return $this->hasMany(ServiceScopeUser::class)
             ->where('permission', true);
     }
 
@@ -68,7 +79,7 @@ class User extends Authenticatable
      */
     public function permissionNotGivenScopes(): HasMany
     {
-        return $this->hasMany('App\Model\ServiceScopeUser')
+        return $this->hasMany(ServiceScopeUser::class)
             ->where('permission', false);
     }
 

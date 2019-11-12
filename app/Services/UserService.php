@@ -87,7 +87,6 @@ class UserService
      */
     public function saveNormalUser(array $userData, int $serviceId): User
     {
-        
         $user = $this->userRepository->findWhere(['email' => $userData['email']]);
 
         if (!$user instanceof User) { //if user does not exist in database
@@ -104,13 +103,18 @@ class UserService
             ]);
         }
 
-        $userLoginType = $this->userLoginTypeRepository->findWhere(['user_id' => $user->id, 'loginType_id' => $serviceId]);
+        $userLoginType = $this->userLoginTypeRepository->findWhere([
+            'user_id' => $user->id, 
+            'loginType_id' => $serviceId
+        ]);
+
         if (!$userLoginType instanceof UserLoginType) {
             $this->storeUserLoginType($user, $serviceId);
         }
 
         return $user;
     }
+
     /**
      * Store user in db
      *
@@ -121,20 +125,39 @@ class UserService
     public function storeFaceBookUser(SocialiteUser $socialiteUser, int $serviceId): User
     {
         $user = $this->userRepository->store([
-            'name' => $socialiteUser->user['first_name']. ' '. $socialiteUser->user['last_name'],
+            'name' => $socialiteUser->name,
             'email' => $socialiteUser->email,
             'avatar_thumbnail' => $socialiteUser->avatar,
             'avatar' => $socialiteUser->avatar_original,
-            'current_city' => $socialiteUser->user['location']['name'],
-            'hometown' => $socialiteUser->user['hometown']['name'],
-            'age_range' => $socialiteUser->user['age_range']['min'],
-            'date_of_birth' => $socialiteUser->user['birthday'],
+            'current_city' => isset($socialiteUser->user['location']) ? $socialiteUser->user['location']['name']: null,
+            'hometown' => isset($socialiteUser->user['hometown'])? $socialiteUser->user['hometown']['name']: null,
+            'age_range' => isset($socialiteUser->user['age_range'])? $socialiteUser->user['age_range']['min']: null,
+            'date_of_birth' => isset($socialiteUser->user['birthday'])? $socialiteUser->user['birthday']: null,
         ]);
 
         $this->storeUserLoginType($user, $serviceId, $socialiteUser);
         $this->storeUserPermissions($user, $serviceId);
 
         return $user;
+    }
+
+
+    /**
+     * Store user in db
+     *
+     * @param SocialiteUser $socialiteUser
+     * @param int $serviceId
+     * @return User
+     */
+    public function updateFaceBookUser(User $user, SocialiteUser $socialiteUser)
+    {
+        return $this->userRepository->update($user->id, [
+            'current_city' => isset($socialiteUser->user['location']) ? $socialiteUser->user['location']['name']: null,
+            'hometown' => isset($socialiteUser->user['hometown'])? $socialiteUser->user['hometown']['name']: null,
+            'age_range' => isset($socialiteUser->user['age_range'])? $socialiteUser->user['age_range']['min']: null,
+            'date_of_birth' => isset($socialiteUser->user['birthday'])? $socialiteUser->user['birthday']: null,
+            'gender' => isset($socialiteUser->user['gender'])? $socialiteUser->user['gender']: null
+        ]);
     }
 
     /**
@@ -150,10 +173,10 @@ class UserService
         return $this->userLoginTypeRepository->store([
             'user_id' => $user->id, 
             'loginType_id' => $serviceId,
-            'token' => $socialiteUser->token,
-            'refresh_token' => $socialiteUser->refreshToken,
-            'expires_in' => $socialiteUser->expiresIn,
-            'service_id' => $socialiteUser->id
+            'token' => isset($socialiteUser->token)? $socialiteUser->token: null,
+            'refresh_token' => isset($socialiteUser->refreshToken)? $socialiteUser->refreshToken: null,
+            'expires_in' => isset($socialiteUser->expiresIn)? $socialiteUser->expiresIn: null,
+            'service_id' => isset($socialiteUser->id)? $socialiteUser->id: null
             ]
         );
     }
